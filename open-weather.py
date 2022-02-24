@@ -35,7 +35,7 @@ try:
     bodyText = ImageFont.truetype(FONT, 30, index=0)
     timeText = ImageFont.truetype(FONT, 20, index=0)
     condText = ImageFont.truetype(FONT, 45, index=0)
-    sunText = ImageFont.truetype(FONT,36,index=0)
+    sunText = ImageFont.truetype(FONT,45,index=0)
     imageBlack = Image.new(mode='1', size=(w, h), color=255)
     drawBlack = ImageDraw.Draw(imageBlack)
     imageRed = Image.new(mode='1', size=(w, h), color=255)
@@ -106,14 +106,14 @@ try:
     #drawBlack.text((20, 2), curTemp, font=tempText, fill=0, align='left')
     drawBlack.text((250, 2), '°', font=iconText, fill=0, align='left') 
 
-    drawRed.text((indent(curDesc1,condText,w)+50, 80), curDesc1, font=condText, fill=0, align='left')
+    drawBlack.text((indent(curDesc1,condText,wHalf)-50, 160), curDesc1, font=condText, fill=0, align='left')
     if len(curDesc) > 1:
-        drawBlack.text((indent(curDesc2,condText,w)+50, 140), curDesc2, font=condText, fill=0, align='left')
+        drawBlack.text((indent(curDesc2,condText,wHalf)-50, 200), curDesc2, font=condText, fill=0, align='left')
 
-    drawBlack.text((indent('Sunrise:',sunText,200)+600,0),'Sunrise:',font=sunText,fill=0,align='left')
-    drawBlack.text((indent(sunriseStr,sunText,200)+600,50),sunriseStr, font=sunText, fill=0, align='left')
-    drawBlack.text((indent('Sunset:',sunText,200)+600,100),'Sunset:',font=sunText,fill=0,align='left')
-    drawBlack.text((indent(sunsetStr,sunText,200)+600,150),sunsetStr, font=sunText, fill=0, align='left')
+    drawBlack.text((indent('Sunrise:',sunText,300)+500,0),'Sunrise:',font=sunText,fill=0,align='left')
+    drawBlack.text((indent(sunriseStr,sunText,300)+500,80),sunriseStr, font=sunText, fill=0, align='left')
+    drawBlack.text((indent('Sunset:',sunText,300)+500,160),'Sunset:',font=sunText,fill=0,align='left')
+    drawBlack.text((indent(sunsetStr,sunText,300)+500,240),sunsetStr, font=sunText, fill=0, align='left')
 
 
     epd.display(epd.getbuffer(imageBlack),epd.getbuffer(imageRed))
