@@ -116,13 +116,13 @@ try:
     #drawRed.rectangle((300, 0, 600, 240), fill=1, outline=0)
 
     logo = get_icon(curID)
-    #imageRed.paste(logo, (20, 30))
-    #imageRed.paste(logo, (imageIndent(logo,w)+50,30))
+    logoLg = logo.resize((64,64))
+    imageRed.paste(logoLg, (imageIndent(logo,w)-50,60))
 
 ###TEMP TEXT###
-    drawBlack.text((indent('Current: '+curDtStr,bodyText,wHalf)-50,0),'Current: '+curDtStr,font=bodyText,fill=0,align='left')
+    drawRed.text((indent('Current: '+curDtStr,bodyText,wHalf)-50,0),'Current: '+curDtStr,font=bodyText,fill=0,align='left')
     drawBlack.text((indent(curTemp,tempText,wHalf)-50, 2), curTemp, font=tempText, fill=0, align='left')
-    drawBlack.text((250, 10), '°', font=iconText, fill=0, align='left') 
+    drawRed.text((250, 10), '°', font=iconText, fill=0, align='left') 
 
 ###CONDITION TEXT###
     drawBlack.text((indent(curDesc1,condText,wHalf)-50, 160), curDesc1, font=condText, fill=0, align='left')
@@ -130,27 +130,27 @@ try:
         drawBlack.text((indent(curDesc2,condText,wHalf)-50, 210), curDesc2, font=condText, fill=0, align='left')
 
 ###LOW TEXT###
-    drawBlack.text((indent('Low',bodyText,wHalf/2),260),'Low',font=bodyText,fill=0,align='left')
+    drawRed.text((indent('Low',bodyText,wHalf/2),260),'Low',font=bodyText,fill=0,align='left')
     drawBlack.text((indent(lowTemp,iconText,wHalf/2),275),lowTemp,font=iconText,fill=0,align='left')
 
 ###HIGH TEXT###
-    drawBlack.text((indent('High',bodyText,wHalf/2),380),'High',font=bodyText,fill=0,align='left')
+    drawRed.text((indent('High',bodyText,wHalf/2),380),'High',font=bodyText,fill=0,align='left')
     drawBlack.text((indent(highTemp,iconText,wHalf/2),395),highTemp,font=iconText,fill=0,align='left')
 
 ###NEXT HOUR TEXT###
-    drawBlack.text((indent(nextHourStr,bodyText,wHalf/2)+200,260),nextHourStr,font=bodyText,fill=0,align='left')
+    drawRed.text((indent(nextHourStr,bodyText,wHalf/2)+200,260),nextHourStr,font=bodyText,fill=0,align='left')
     drawBlack.text((indent(nextHourTemp,iconText,wHalf/2)+200,275),nextHourTemp,font=iconText,fill=0,align='left')
 
 ###NEXT HOUR 2 TEXT###
-    drawBlack.text((indent(nextHourStr2,bodyText,wHalf/2)+200,380),nextHourStr2,font=bodyText,fill=0,align='left')
+    drawRed.text((indent(nextHourStr2,bodyText,wHalf/2)+200,380),nextHourStr2,font=bodyText,fill=0,align='left')
     drawBlack.text((indent(nextHourTemp2,iconText,wHalf/2)+200,395),nextHourTemp2,font=iconText,fill=0,align='left')
 
 ###SUNRISE TEXT###
-    drawBlack.text((indent(sunriseText,bodyText,400)+400,0),sunriseText,font=bodyText,fill=0,align='left')
+    drawRed.text((indent(sunriseText,bodyText,400)+400,0),sunriseText,font=bodyText,fill=0,align='left')
     drawBlack.text((indent(sunriseFull,sunText,400)+400,20),sunriseFull, font=sunText, fill=0, align='left')
 
 ###SUNSET TEXT###
-    drawBlack.text((indent(sunsetText,bodyText,400)+400,80), sunsetText,font=bodyText,fill=0,align='left')
+    drawRed.text((indent(sunsetText,bodyText,400)+400,80), sunsetText,font=bodyText,fill=0,align='left')
     drawBlack.text((indent(sunsetFull,sunText,400)+400,100),sunsetFull, font=sunText, fill=0, align='left')
 
 
