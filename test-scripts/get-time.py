@@ -9,6 +9,22 @@ responseStr = f.read()
 responseJson = json.loads(responseStr)
 responseCurr = responseJson['current']
 responseDaily = responseJson['daily'][1]
+responseHiLo = responseJson['daily'][0]
+responseHourlyOne = responseJson['hourly'][0]
+responseHourlyTwo = responseJson['hourly'][1]
+
+hourOneTs = responseHourlyOne['dt']
+hourOneDt = datetime.fromtimestamp(hourOneTs)
+hourOneStr = hourOneDt.strftime("%-I:%M:%S %p")
+print('Hour1: ' + hourOneStr)
+
+hourTwoTs = responseHourlyTwo['dt']
+hourTwoDt = datetime.fromtimestamp(hourTwoTs)
+hourTwoStr = hourTwoDt.strftime("%-I:%M:%S %p")
+print('Hour2: ' + hourTwoStr)
+
+
+print(responseHiLo['temp']['max'])
 
 
 curTemp = str(round(responseCurr['temp']))# + '°'

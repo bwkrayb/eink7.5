@@ -31,8 +31,8 @@ try:
 
     #### IMAGE CODE ####
     tempText = ImageFont.truetype(FONT, 150, index=0)
-    iconText = ImageFont.truetype(FONT, 90, index=0)
-    bodyText = ImageFont.truetype(FONT, 30, index=0)
+    iconText = ImageFont.truetype(FONT, 80, index=0)
+    bodyText = ImageFont.truetype(FONT, 20, index=0)
     timeText = ImageFont.truetype(FONT, 20, index=0)
     condText = ImageFont.truetype(FONT, 45, index=0)
     sunText = ImageFont.truetype(FONT,45,index=0)
@@ -63,6 +63,26 @@ try:
         responseDailySR = responseJson['daily'][0]
         sunriseText = 'Today'
 
+    responseNextHour = responseJson['hourly'][1]
+
+    nextHourTs = responseNextHour['dt']
+    nextHourDt = datetime.fromtimestamp(nextHourTs)
+    nextHourStr = nextHourDt.strftime("%-I%p")
+    nextHourTemp = str(round(responseNextHour['temp']))+'°'
+    nextHourFull = nextHourStr + ' est:'
+
+    responseNextHour2 = responseJson['hourly'][2]
+    nextHourTs2 = responseNextHour2['dt']
+    nextHourDt2 = datetime.fromtimestamp(nextHourTs2)
+    nextHourStr2 = nextHourDt2.strftime("%-I%p")
+    nextHourTemp2 = str(round(responseNextHour2['temp']))+'°'
+    nextHourFull2 = nextHourStr2 + ' est:'
+
+    responseHiLo = responseJson['daily'][0]
+    lowTemp = str(round(responseHiLo['temp']['min']))+'°'
+    highTemp = str(round(responseHiLo['temp']['max']))+'°'
+
+
     curTs = responseCurr['dt']
     curDt = datetime.fromtimestamp(curTs)
     curDtStr = curDt.strftime("%-I:%M:%S %p")
@@ -71,13 +91,13 @@ try:
 
     sunriseTs = responseDailySR['sunrise']
     sunriseDt = datetime.fromtimestamp(sunriseTs)
-    sunriseStr = sunriseDt.strftime("%-I:%M:%S %p")
-    print('SR ' + sunriseText + ' ' + sunriseStr)
+    sunriseStr = sunriseDt.strftime("%-I:%M:%S%p")
+    sunriseFull = 'SR ' + sunriseStr
 
     sunsetTs = responseDailySS['sunset']
     sunsetDt = datetime.fromtimestamp(sunsetTs)
-    sunsetStr = sunsetDt.strftime("%-I:%M:%S %p")
-    print('SS ' + sunsetText + ' ' + sunsetStr)
+    sunsetStr = sunsetDt.strftime("%-I:%M:%S%p")
+    sunsetFull = 'SS ' + sunsetStr
 
     curTemp = str(round(responseCurr['temp']))# + '°'
     curFeel = str(round(responseCurr['feels_like']))# + '°'
@@ -94,32 +114,52 @@ try:
     else:
         curDesc1 = curDesc[0] 
 
-    drawBlack.rectangle((400,240,800,480), fill=1, outline=0)
-    drawRed.rectangle((300, 0, 600, 240), fill=1, outline=0)
+    #drawBlack.rectangle((400,240,800,480), fill=1, outline=0)
+    #drawRed.rectangle((300, 0, 600, 240), fill=1, outline=0)
 
     logo = get_icon(curID)
     #imageRed.paste(logo, (20, 30))
-    imageRed.paste(logo, (imageIndent(logo,w)+50,30))
+    #imageRed.paste(logo, (imageIndent(logo,w)+50,30))
 
+###TEMP TEXT###
+    drawBlack.text((indent('Current:',bodyText,wHalf)-50,0),'Current:',font=bodyText,fill=0,align='left')
     drawBlack.text((indent(curTemp,tempText,wHalf)-50, 2), curTemp, font=tempText, fill=0, align='left')
+    drawBlack.text((250, 10), '°', font=iconText, fill=0, align='left') 
 
-    #drawBlack.text((20, 2), curTemp, font=tempText, fill=0, align='left')
-    drawBlack.text((250, 2), '°', font=iconText, fill=0, align='left') 
-
+###CONDITION TEXT###
     drawBlack.text((indent(curDesc1,condText,wHalf)-50, 160), curDesc1, font=condText, fill=0, align='left')
     if len(curDesc) > 1:
-        drawBlack.text((indent(curDesc2,condText,wHalf)-50, 200), curDesc2, font=condText, fill=0, align='left')
+        drawBlack.text((indent(curDesc2,condText,wHalf)-50, 210), curDesc2, font=condText, fill=0, align='left')
 
-    drawBlack.text((indent('Sunrise:',sunText,300)+500,0),'Sunrise:',font=sunText,fill=0,align='left')
-    drawBlack.text((indent(sunriseStr,sunText,300)+500,80),sunriseStr, font=sunText, fill=0, align='left')
-    drawBlack.text((indent('Sunset:',sunText,300)+500,160),'Sunset:',font=sunText,fill=0,align='left')
-    drawBlack.text((indent(sunsetStr,sunText,300)+500,240),sunsetStr, font=sunText, fill=0, align='left')
+###NEXT HOUR TEXT###
+    drawBlack.text((indent(nextHourFull,bodyText,wHalf/2),260),nextHourFull,font=bodyText,fill=0,align='left')
+    drawBlack.text((indent(nextHourTemp,iconText,wHalf/2),275),nextHourTemp,font=iconText,fill=0,align='left')
+
+###NEXT HOUR 2 TEXT###
+    drawBlack.text((indent(nextHourFull2,bodyText,wHalf/2),380),nextHourFull2,font=bodyText,fill=0,align='left')
+    drawBlack.text((indent(nextHourTemp2,iconText,wHalf/2),395),nextHourTemp2,font=iconText,fill=0,align='left')
+
+###LOW TEXT###
+    drawBlack.text((indent('Low',bodyText,wHalf/2)+200,260),'Low',font=bodyText,fill=0,align='left')
+    drawBlack.text((indent(lowTemp,iconText,wHalf/2)+200,275),lowTemp,font=iconText,fill=0,align='left')
+
+###HIGH TEXT###
+    drawBlack.text((indent('High',bodyText,wHalf/2)+200,380),'High',font=bodyText,fill=0,align='left')
+    drawBlack.text((indent(highTemp,iconText,wHalf/2)+200,395),highTemp,font=iconText,fill=0,align='left')
+
+###SUNRISE TEXT###
+    drawBlack.text((indent(sunriseText,bodyText,500)+300,0),sunriseText,font=bodyText,fill=0,align='left')
+    drawBlack.text((indent(sunriseFull,sunText,500)+300,20),sunriseFull, font=sunText, fill=0, align='left')
+
+###SUNSET TEXT###
+    drawBlack.text((indent(sunsetText,bodyText,500)+300,80), sunsetText,font=bodyText,fill=0,align='left')
+    drawBlack.text((indent(sunsetFull,sunText,500)+300,100),sunsetFull, font=sunText, fill=0, align='left')
+
+
 
 
     epd.display(epd.getbuffer(imageBlack),epd.getbuffer(imageRed))
     
-
-
 
 
     f.close()
