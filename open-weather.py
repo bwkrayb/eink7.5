@@ -42,8 +42,8 @@ try:
     drawRed = ImageDraw.Draw(imageRed)
     dt = datetime.now()
 
-    write_weather()
-    time.sleep(5)
+    #write_weather()
+    #time.sleep(5)
     f = open(data_dir + 'weather.json')
     responseStr = f.read()
     responseJson = json.loads(responseStr)
@@ -69,14 +69,12 @@ try:
     nextHourDt = datetime.fromtimestamp(nextHourTs)
     nextHourStr = nextHourDt.strftime("%-I%p")
     nextHourTemp = str(round(responseNextHour['temp']))+'°'
-    nextHourFull = nextHourStr + ' est:'
 
     responseNextHour2 = responseJson['hourly'][2]
     nextHourTs2 = responseNextHour2['dt']
     nextHourDt2 = datetime.fromtimestamp(nextHourTs2)
     nextHourStr2 = nextHourDt2.strftime("%-I%p")
     nextHourTemp2 = str(round(responseNextHour2['temp']))+'°'
-    nextHourFull2 = nextHourStr2 + ' est:'
 
     responseHiLo = responseJson['daily'][0]
     lowTemp = str(round(responseHiLo['temp']['min']))+'°'
@@ -85,18 +83,18 @@ try:
 
     curTs = responseCurr['dt']
     curDt = datetime.fromtimestamp(curTs)
-    curDtStr = curDt.strftime("%-I:%M:%S %p")
+    curDtStr = curDt.strftime("%-I:%M%p")
     #curDtStr = curDt.strftime("%c")
     print(curDtStr)
 
     sunriseTs = responseDailySR['sunrise']
     sunriseDt = datetime.fromtimestamp(sunriseTs)
-    sunriseStr = sunriseDt.strftime("%-I:%M:%S%p")
+    sunriseStr = sunriseDt.strftime("%-I:%M%p")
     sunriseFull = 'SR ' + sunriseStr
 
     sunsetTs = responseDailySS['sunset']
     sunsetDt = datetime.fromtimestamp(sunsetTs)
-    sunsetStr = sunsetDt.strftime("%-I:%M:%S%p")
+    sunsetStr = sunsetDt.strftime("%-I:%M%p")
     sunsetFull = 'SS ' + sunsetStr
 
     curTemp = str(round(responseCurr['temp']))# + '°'
@@ -122,7 +120,7 @@ try:
     #imageRed.paste(logo, (imageIndent(logo,w)+50,30))
 
 ###TEMP TEXT###
-    drawBlack.text((indent('Current:',bodyText,wHalf)-50,0),'Current:',font=bodyText,fill=0,align='left')
+    drawBlack.text((indent('Current: '+curDtStr,bodyText,wHalf)-50,0),'Current: '+curDtStr,font=bodyText,fill=0,align='left')
     drawBlack.text((indent(curTemp,tempText,wHalf)-50, 2), curTemp, font=tempText, fill=0, align='left')
     drawBlack.text((250, 10), '°', font=iconText, fill=0, align='left') 
 
@@ -131,29 +129,29 @@ try:
     if len(curDesc) > 1:
         drawBlack.text((indent(curDesc2,condText,wHalf)-50, 210), curDesc2, font=condText, fill=0, align='left')
 
-###NEXT HOUR TEXT###
-    drawBlack.text((indent(nextHourFull,bodyText,wHalf/2),260),nextHourFull,font=bodyText,fill=0,align='left')
-    drawBlack.text((indent(nextHourTemp,iconText,wHalf/2),275),nextHourTemp,font=iconText,fill=0,align='left')
-
-###NEXT HOUR 2 TEXT###
-    drawBlack.text((indent(nextHourFull2,bodyText,wHalf/2),380),nextHourFull2,font=bodyText,fill=0,align='left')
-    drawBlack.text((indent(nextHourTemp2,iconText,wHalf/2),395),nextHourTemp2,font=iconText,fill=0,align='left')
-
 ###LOW TEXT###
-    drawBlack.text((indent('Low',bodyText,wHalf/2)+200,260),'Low',font=bodyText,fill=0,align='left')
-    drawBlack.text((indent(lowTemp,iconText,wHalf/2)+200,275),lowTemp,font=iconText,fill=0,align='left')
+    drawBlack.text((indent('Low',bodyText,wHalf/2),260),'Low',font=bodyText,fill=0,align='left')
+    drawBlack.text((indent(lowTemp,iconText,wHalf/2),275),lowTemp,font=iconText,fill=0,align='left')
 
 ###HIGH TEXT###
-    drawBlack.text((indent('High',bodyText,wHalf/2)+200,380),'High',font=bodyText,fill=0,align='left')
-    drawBlack.text((indent(highTemp,iconText,wHalf/2)+200,395),highTemp,font=iconText,fill=0,align='left')
+    drawBlack.text((indent('High',bodyText,wHalf/2),380),'High',font=bodyText,fill=0,align='left')
+    drawBlack.text((indent(highTemp,iconText,wHalf/2),395),highTemp,font=iconText,fill=0,align='left')
+
+###NEXT HOUR TEXT###
+    drawBlack.text((indent(nextHourStr,bodyText,wHalf/2)+200,260),nextHourStr,font=bodyText,fill=0,align='left')
+    drawBlack.text((indent(nextHourTemp,iconText,wHalf/2)+200,275),nextHourTemp,font=iconText,fill=0,align='left')
+
+###NEXT HOUR 2 TEXT###
+    drawBlack.text((indent(nextHourStr2,bodyText,wHalf/2)+200,380),nextHourStr2,font=bodyText,fill=0,align='left')
+    drawBlack.text((indent(nextHourTemp2,iconText,wHalf/2)+200,395),nextHourTemp2,font=iconText,fill=0,align='left')
 
 ###SUNRISE TEXT###
-    drawBlack.text((indent(sunriseText,bodyText,500)+300,0),sunriseText,font=bodyText,fill=0,align='left')
-    drawBlack.text((indent(sunriseFull,sunText,500)+300,20),sunriseFull, font=sunText, fill=0, align='left')
+    drawBlack.text((indent(sunriseText,bodyText,400)+400,0),sunriseText,font=bodyText,fill=0,align='left')
+    drawBlack.text((indent(sunriseFull,sunText,400)+400,20),sunriseFull, font=sunText, fill=0, align='left')
 
 ###SUNSET TEXT###
-    drawBlack.text((indent(sunsetText,bodyText,500)+300,80), sunsetText,font=bodyText,fill=0,align='left')
-    drawBlack.text((indent(sunsetFull,sunText,500)+300,100),sunsetFull, font=sunText, fill=0, align='left')
+    drawBlack.text((indent(sunsetText,bodyText,400)+400,80), sunsetText,font=bodyText,fill=0,align='left')
+    drawBlack.text((indent(sunsetFull,sunText,400)+400,100),sunsetFull, font=sunText, fill=0, align='left')
 
 
 
