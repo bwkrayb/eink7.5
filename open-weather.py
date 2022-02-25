@@ -42,8 +42,8 @@ try:
     drawRed = ImageDraw.Draw(imageRed)
     dt = datetime.now()
 
-    #write_weather()
-    #time.sleep(5)
+    write_weather()
+    time.sleep(5)
     f = open(data_dir + 'weather.json')
     responseStr = f.read()
     responseJson = json.loads(responseStr)
