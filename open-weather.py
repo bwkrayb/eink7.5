@@ -48,6 +48,7 @@ try:
     responseStr = f.read()
     responseJson = json.loads(responseStr)
     responseCurr = responseJson['current']
+    responseNow = responseJson['hourly'][0]
 
     if int(dt.strftime('%H')) > 21:
         responseDailySS = responseJson['daily'][1]
@@ -99,8 +100,10 @@ try:
 
     curTemp = str(round(responseCurr['temp']))# + '°'
     curFeel = str(round(responseCurr['feels_like']))# + '°'
-    curDesc = responseCurr['weather'][0]['description'].title().split()
-    curID = responseCurr['weather'][0]['id']
+    #curDesc = responseCurr['weather'][0]['description'].title().split()
+    curDesc = responseNow['weather'][0]['description'].title().split()
+    #curID = responseCurr['weather'][0]['id']
+    curID = responseNow['weather'][0]['id']
 
     if len(curDesc) > 2:
         custDesc = get_desc(curID).split()
@@ -130,16 +133,16 @@ try:
         drawBlack.text((indent(curDesc2,condText,wHalf)-50, 210), curDesc2, font=condText, fill=0, align='left')
 
 ###LOW TEXT###
-    drawRed.text((indent('Low',bodyText,wHalf/2),260),'Low',font=bodyText,fill=0,align='left')
-    drawBlack.text((indent(lowTemp,iconText,wHalf/2),275),lowTemp,font=iconText,fill=0,align='left')
+    drawRed.text((indent('Low',bodyText,wHalf/2),265),'Low',font=bodyText,fill=0,align='left')
+    drawBlack.text((indent(lowTemp,iconText,wHalf/2),280),lowTemp,font=iconText,fill=0,align='left')
 
 ###HIGH TEXT###
     drawRed.text((indent('High',bodyText,wHalf/2),380),'High',font=bodyText,fill=0,align='left')
     drawBlack.text((indent(highTemp,iconText,wHalf/2),395),highTemp,font=iconText,fill=0,align='left')
 
 ###NEXT HOUR TEXT###
-    drawRed.text((indent(nextHourStr,bodyText,wHalf/2)+200,260),nextHourStr,font=bodyText,fill=0,align='left')
-    drawBlack.text((indent(nextHourTemp,iconText,wHalf/2)+200,275),nextHourTemp,font=iconText,fill=0,align='left')
+    drawRed.text((indent(nextHourStr,bodyText,wHalf/2)+200,265),nextHourStr,font=bodyText,fill=0,align='left')
+    drawBlack.text((indent(nextHourTemp,iconText,wHalf/2)+200,280),nextHourTemp,font=iconText,fill=0,align='left')
 
 ###NEXT HOUR 2 TEXT###
     drawRed.text((indent(nextHourStr2,bodyText,wHalf/2)+200,380),nextHourStr2,font=bodyText,fill=0,align='left')
@@ -158,9 +161,10 @@ try:
 
     epd.display(epd.getbuffer(imageBlack),epd.getbuffer(imageRed))
     
-
-
+    epd.sleep()
     f.close()
+
+
 
 except IOError as e:
     print(e)
