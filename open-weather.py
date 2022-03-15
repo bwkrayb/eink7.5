@@ -3,17 +3,22 @@ import time
 import logging
 import requests
 import json
-from libs.functions import get_icon, indent, indentThirds,  paste, write_weather, get_desc, imageIndent, imageIndentThirds
+from libs.functions import get_icon, indent, indentThirds,  paste, write_weather, write_running_month, write_running_last, get_desc, imageIndent, imageIndentThirds
 from datetime import datetime
 from libs.waveshare_epd import epd7in5b_V2
 from PIL import Image, ImageDraw, ImageFont
-from settings import API_KEY
+from settings import API_KEY,SMASHRUN_KEY
 
 pic_dir = '/home/pi/eink7in5/pics'
 data_dir = '/home/pi/eink7in5/data/'
 img_dir = '/home/pi/eink7in5/images/jpg/'
 
 FONT = '/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf'
+
+write_weather()
+
+#write_running_month()
+#write_running_last()
 
 try:
     # Display init, clear
@@ -42,8 +47,8 @@ try:
     drawRed = ImageDraw.Draw(imageRed)
     dt = datetime.now()
 
-    write_weather()
-    time.sleep(5)
+    #write_weather()
+    #time.sleep(5)
     f = open(data_dir + 'weather.json')
     responseStr = f.read()
     responseJson = json.loads(responseStr)
@@ -86,7 +91,7 @@ try:
     curDt = datetime.fromtimestamp(curTs)
     curDtStr = curDt.strftime("%-I:%M%p")
     #curDtStr = curDt.strftime("%c")
-    print(curDtStr)
+    #print(curDtStr)
 
     sunriseTs = responseDailySR['sunrise']
     sunriseDt = datetime.fromtimestamp(sunriseTs)
