@@ -17,8 +17,6 @@ FONT = '/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf'
 
 write_weather()
 
-#write_running_month()
-#write_running_last()
 
 try:
     # Display init, clear
