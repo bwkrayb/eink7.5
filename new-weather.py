@@ -70,15 +70,16 @@ def check_last_run():
     responseJson = response.json()
     lastRunID = responseJson[0]
 
-def drawSmallTemp(text,temp,width,height):
-    drawRed.text((indent(text,bodyText,w/4)+width,height),text,font=bodyText,fill=0,align='left')
-    drawBlack.text((indent(temp,iconText,w/4),height+15),temp,font=iconText,fill=0,align='left')
+def drawSmallTemp(hourText,temp,width,height):
+    drawRed.text((indent(hourText,bodyText,w/4)+ width, height),hourText,font=bodyText,fill=0,align='left')
+    drawBlack.text((indent(temp,iconText,w/4)+ width, height+15),temp,font=iconText,fill=0,align='left')
 
 try:
     write_weather()
     readLastRun()
     readMonthRun()
     check_last_run()
+
     if lastRunID != lastRunJson[0]['activityId']:
         print('now updating run file')
         write_running_month()
@@ -135,10 +136,10 @@ try:
 
     curTemp = str(round(responseCurr['temp']))# + '°'
     curFeel = str(round(responseCurr['feels_like']))# + '°'
-    #curDesc = responseCurr['weather'][0]['description'].title().split()
-    curDesc = responseThisHour['weather'][0]['description'].title().split()
-    #curID = responseCurr['weather'][0]['id']
-    curID = responseThisHour['weather'][0]['id']
+    curDesc = responseCurr['weather'][0]['description'].title().split()
+    #curDesc = responseThisHour['weather'][0]['description'].title().split()
+    curID = responseCurr['weather'][0]['id']
+    #curID = responseThisHour['weather'][0]['id']
 
     if len(curDesc) > 2:
         custDesc = get_desc(curID).split()
@@ -163,39 +164,18 @@ try:
     drawRed.text((250, 10), '°', font=iconText, fill=0, align='left') 
 
 ###CONDITION TEXT###
-#    drawBlack.text((indent(curDesc1,condText,w/2)-50, 160), curDesc1, font=condText, fill=0, align='left')
-#    if len(curDesc) > 1:
-#       drawBlack.text((indent(curDesc2,condText,w/2)-50, 210), curDesc2, font=condText, fill=0, align='left')
-
-###CONDITION TEXT###
-    drawBlack.text((indent(curDesc1,condText,wHalf)-50, 160), curDesc1, font=condText, fill=0, align='left')
+    drawBlack.text((indent(curDesc1,condText,w/2)-50, 160), curDesc1, font=condText, fill=0, align='left')
     if len(curDesc) > 1:
-        drawBlack.text((indent(curDesc2,condText,wHalf)-50, 210), curDesc2, font=condText, fill=0, align='left')
+       drawBlack.text((indent(curDesc2,condText,w/2)-50, 210), curDesc2, font=condText, fill=0, align='left')
 
 
-###LOW TEXT###
-#   drawRed.text((indent('Low',bodyText,w/4),265),'Low',font=bodyText,fill=0,align='left')
-#   drawBlack.text((indent(lowTemp,iconText,w/4),280),lowTemp,font=iconText,fill=0,align='left')
+    drawSmallTemp('Low',lowTemp,0,265)
 
-#drawSmallTemp('Low',lowTemp,0,265)
+    drawSmallTemp('High',highTemp,0,380)
 
-###HIGH TEXT###
-#   drawRed.text((indent('High',bodyText,w/4),380),'High',font=bodyText,fill=0,align='left')
-#   drawBlack.text((indent(highTemp,iconText,w/4),395),highTemp,font=iconText,fill=0,align='left')
+    drawSmallTemp(nextHourStr,nextHourTemp,200,265)
 
-drawSmallTemp('High',highTemp,0,380)
-
-###NEXT HOUR TEXT###
-#   drawRed.text((indent(nextHourStr,bodyText,w/4)+200,265),nextHourStr,font=bodyText,fill=0,align='left')
-#   drawBlack.text((indent(nextHourTemp,iconText,w/4)+200,280),nextHourTemp,font=iconText,fill=0,align='left')
-
-drawSmallTemp(nextHourStr,nextHourTemp,200,265)
-
-###NEXT HOUR 2 TEXT###
-#    drawRed.text((indent(nextHourStr2,bodyText,w/4)+200,380),nextHourStr2,font=bodyText,fill=0,align='left')
-#    drawBlack.text((indent(nextHourTemp2,iconText,w/4)+200,395),nextHourTemp2,font=iconText,fill=0,align='left')
-
-drawSmallTemp(nextHourStr2,nextHourTemp2,200,380)
+    drawSmallTemp(nextHourStr2,nextHourTemp2,200,380)
 
 
 ###SUNRISE TEXT###
