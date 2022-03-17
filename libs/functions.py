@@ -99,34 +99,31 @@ def write_running_month():
     today = date.today()
     year = today.strftime("%Y")
     month = today.strftime("%m")
-    f = open(data_dir +'running-month.json', 'w')
-    smashrunURL = "https://api.smashrun.com/v1/my/stats/" + year + "/" + month + "?access_token=" + SMASHRUN_KEY
-    response = requests.get(smashrunURL)
-    responseJson = response.json()
-    responseStr = str(responseJson)
-    #p = re.compile('(?<!\\\\)\'')
-    #finalStr = p.sub('\"', responseStr)
-    #f.write(finalStr)
-    f.write(responseStr)
+    f = open(data_dir +'month-running.json', 'w')
+    monthRunUrlOpen = urllib.request.urlopen("https://api.smashrun.com/v1/my/stats/" + year + "/" + month + "?access_token=" + SMASHRUN_KEY).read()
+    monthRunStr = monthRunUrlOpen.decode('utf-8').strip("[]")
+    monthRunJson = json.loads(monthRunStr)
+    f.write(monthRunStr)
     f.close()
 
 def write_running_last():
-    f = open(data_dir+'running-last.json','w')
+    f = open(data_dir+'last-run.json','w')
     smashrunURL = "https://api.smashrun.com/v1/my/activities/search?count=1&access_token=" + SMASHRUN_KEY
     response = requests.get(smashrunURL)
     responseJson = response.json()
     responseStr = str(responseJson)
-    #p = re.compile('(?<!\\\\)\'')
-    #finalStr = p.sub('\"', responseStr)
-    #f.write(finalStr)
-    f.write(responseStr)
+    p = re.compile('(?<!\\\\)\'')
+    finalStr = p.sub('\"', responseStr)
+    f.write(finalStr)
     f.close()
 
-def check_last_run(run_id):
+def check_last_run():
+    global lastRunID
     smashrunURL = "https://api.smashrun.com/v1/my/activities/search/ids?count=1&access_token=" + SMASHRUN_KEY
-    response = request.get(smashrunURL)
+    response = requests.get(smashrunURL)
     responseJson = response.json()
-    
+    lastRunID = responseJson[0]
+ 
 
 def get_desc(curID):
     dt = datetime.now()

@@ -13,33 +13,20 @@ from datetime import date,datetime
 
 data_dir='/home/pi/eink7in5/data/'
 
-def remove_nulls(d):
-    return {k: v for k, v in d.iteritems() if v is not None}
-
-#res = json.loads(json_value, object_hook=remove_nulls)
 
 def write_running_month():
     today = date.today()
     year = today.strftime("%Y")
     month = today.strftime("%m")
-    f = open(data_dir +'running-month.json', 'w')
+    f = open(data_dir +'month-running.json', 'w')
     monthRunUrlOpen = urllib.request.urlopen("https://api.smashrun.com/v1/my/stats/" + year + "/" + month + "?access_token=" + SMASHRUN_KEY).read()
     monthRunStr = monthRunUrlOpen.decode('utf-8').strip("[]")
     monthRunJson = json.loads(monthRunStr)
     f.write(monthRunStr)
     f.close()
 
-    #smashrunURL = "https://api.smashrun.com/v1/my/stats/" + year + "/" + month + "?access_token=" + SMASHRUN_KEY
-    #response = requests.get(smashrunURL)
-    #responseJson = response.json()
-    #responseStr = str(responseJson)
-    #p = re.compile('(?<!\\\\)\'')
-    #finalStr = p.sub('\"', responseStr)
-    #f.write(finalStr)
-    #f.close()
-
 def write_running_last():
-    f = open(data_dir+'running-last.json','w')
+    f = open(data_dir+'last-run.json','w')
     smashrunURL = "https://api.smashrun.com/v1/my/activities/search?count=1&access_token=" + SMASHRUN_KEY
     response = requests.get(smashrunURL)
     responseJson = response.json()
@@ -63,12 +50,12 @@ def check_last_run():
 check_last_run()
 
 
-lastRunFile = open(data_dir + 'running-last.json')
+lastRunFile = open(data_dir + 'last-run.json')
 lastRunStr = lastRunFile.read()
 lastRunJson = json.loads(lastRunStr)
 lastRunFile.close()
 
-monthRunFile = open(data_dir + 'running-month.json')
+monthRunFile = open(data_dir + 'month-running.json')
 monthRunStr = monthRunFile.read()
 monthRunJson = json.loads(monthRunStr)
 print(monthRunJson['runCount'])
