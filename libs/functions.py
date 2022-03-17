@@ -117,14 +117,6 @@ def write_running_last():
     f.write(finalStr)
     f.close()
 
-def check_last_run():
-    global lastRunID
-    smashrunURL = "https://api.smashrun.com/v1/my/activities/search/ids?count=1&access_token=" + SMASHRUN_KEY
-    response = requests.get(smashrunURL)
-    responseJson = response.json()
-    lastRunID = responseJson[0]
- 
-
 def get_desc(curID):
     dt = datetime.now()
     thunderStr = "Thunder Storm"
