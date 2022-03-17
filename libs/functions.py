@@ -1,9 +1,11 @@
 import datetime
 import os
 import PIL
+import json
 import time
 import logging
 import requests
+import urllib.request
 import re
 from settings import API_KEY, SMASHRUN_KEY
 from PIL import Image, ImageDraw, ImageFont

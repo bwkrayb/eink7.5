@@ -43,24 +43,27 @@ def check_last_run():
     responseJson = response.json()
     lastRunID = responseJson[0]
 
+def readLastRun():
+    global lastRunJson
+    lastRunFile = open(data_dir + 'last-run.json')
+    lastRunStr = lastRunFile.read()
+    lastRunJson = json.loads(lastRunStr)
+    lastRunFile.close()
+
+def readMonthRun():
+    global monthRunJson
+    monthRunFile = open(data_dir + 'month-running.json')
+    monthRunStr = monthRunFile.read()
+    monthRunJson = json.loads(monthRunStr)
+    monthRunFile.close()
 
 
 #write_running_month()
 #write_running_last()
 check_last_run()
 
-
-lastRunFile = open(data_dir + 'last-run.json')
-lastRunStr = lastRunFile.read()
-lastRunJson = json.loads(lastRunStr)
-lastRunFile.close()
-
-monthRunFile = open(data_dir + 'month-running.json')
-monthRunStr = monthRunFile.read()
-monthRunJson = json.loads(monthRunStr)
-print(monthRunJson['runCount'])
-print(type(monthRunJson))
-monthRunFile.close()
+readLastRun()
+readMonthRun()
 
 if lastRunID != lastRunJson[0]['activityId']:
     print('now updating run file')
@@ -69,13 +72,24 @@ if lastRunID != lastRunJson[0]['activityId']:
 else:
     print('no update needed.')
 
+totalDist = str(round((monthRunJson['totalDistance']*.621),2))
 
+runCount = str(monthRunJson['runCount'])
+
+if monthRunJson['longestRun'] == None:
+    longRun = '0'
+else:
+    longRun = str(round((monthRunJson['longestRun'] * 0.621),2))
+
+if monthRunJson['averageRunLength'] == None:
+    avgLen = '0'
+else:
+    avgLen = str(round((monthRunJson['averageRunLength'] * 0.621),2))
+
+print(longRun)
+print(avgLen)
+print(totalDist)
+print(runCount)
 print(lastRunJson[0]['activityId'])
-
-
-print(monthRunJson['runCount'])
-print(monthRunJson['longestRun'])
-print(monthRunJson['averageRunLength'])
-print(monthRunJson['totalDistance'])
 
 
