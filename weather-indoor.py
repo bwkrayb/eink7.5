@@ -5,7 +5,6 @@ import requests
 import urllib.request
 import json
 import bme680
-from fastapi import FastAPI
 from libs.functions import get_icon, indent, indentThirds,  paste, write_weather, write_running_month, write_running_last, get_desc, imageIndent, imageIndentThirds
 from datetime import datetime,date
 from dateutil import parser
