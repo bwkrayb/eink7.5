@@ -11,21 +11,31 @@ from dateutil import parser
 from libs.waveshare_epd import epd7in5b_V2
 from PIL import Image, ImageDraw, ImageFont
 from settings import API_KEY,SMASHRUN_KEY
+
+
 # Display init, clear
 epd = epd7in5b_V2.EPD()
 epd.init()
 epd.Clear() # 0: Black, 255: White
+
+# setup directories
 pic_dir = '/home/pi/eink7in5/pics'
 data_dir = '/home/pi/eink7in5/data/'
 img_dir = '/home/pi/eink7in5/images/jpg/'
+
+# screen size variables
 h = epd.height #480
 w = epd.width #800
 wHalf = w/2
+
+# date variables
 dt = datetime.now()
 today=date.today()
 month=today.strftime("%m")
 monthText=today.strftime("%B")
 year=today.strftime("%Y")
+
+########## font variables
 FONT = '/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf'
 tempText = ImageFont.truetype(FONT, 150, index=0)
 iconText = ImageFont.truetype(FONT, 80, index=0)
@@ -36,6 +46,8 @@ condText = ImageFont.truetype(FONT, 45, index=0)
 sunText = ImageFont.truetype(FONT,50,index=0)
 dateText = ImageFont.truetype(FONT,35,index=0)
 rightText = ImageFont.truetype(FONT,65,index=0)
+
+########## image variables
 imageBlack = Image.new(mode='1', size=(w, h), color=255)
 drawBlack = ImageDraw.Draw(imageBlack)
 imageRed = Image.new(mode='1', size=(w, h), color=255)
