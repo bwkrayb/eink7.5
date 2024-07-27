@@ -4,6 +4,7 @@ import logging
 import requests
 import urllib.request
 import json
+import bme680
 from libs.functions import get_icon, indent, indentThirds,  paste, write_weather, write_running_month, write_running_last, get_desc, imageIndent, imageIndentThirds
 from datetime import datetime,date
 from dateutil import parser
@@ -28,16 +29,37 @@ year=today.strftime("%Y")
 FONT = '/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf'
 tempText = ImageFont.truetype(FONT, 150, index=0)
 iconText = ImageFont.truetype(FONT, 80, index=0)
+indoorText = ImageFont.truetype(FONT, 100, index=0)
 bodyText = ImageFont.truetype(FONT, 20, index=0)
 timeText = ImageFont.truetype(FONT, 20, index=0)
 condText = ImageFont.truetype(FONT, 45, index=0)
 sunText = ImageFont.truetype(FONT,50,index=0)
 dateText = ImageFont.truetype(FONT,35,index=0)
-runText = ImageFont.truetype(FONT,65,index=0)
+rightText = ImageFont.truetype(FONT,65,index=0)
 imageBlack = Image.new(mode='1', size=(w, h), color=255)
 drawBlack = ImageDraw.Draw(imageBlack)
 imageRed = Image.new(mode='1', size=(w, h), color=255)
 drawRed = ImageDraw.Draw(imageRed)
+
+try:
+    sensor = bme680.BME680(bme680.I2C_ADDR_PRIMARY)
+except (RuntimeError, IOError):
+    sensor = bme680.BME680(bme680.I2C_ADDR_SECONDARY)
+
+# These oversampling settings can be tweaked to
+# change the balance between accuracy and noise in
+# the data.
+
+sensor.set_humidity_oversample(bme680.OS_2X)
+sensor.set_pressure_oversample(bme680.OS_4X)
+sensor.set_temperature_oversample(bme680.OS_8X)
+sensor.set_filter(bme680.FILTER_SIZE_3)
+
+# added merica units temp
+fTemp = str(round((sensor.data.temperature * 1.8) + 32))+'°'
+pressure = str(sensor.data.pressure)+'hPa'
+humidity = str(round(sensor.data.humidity))+'%'
+
 
 def readWeather():
     global responseCurr
@@ -57,79 +79,45 @@ def readWeather():
     responseTomorrow = responseJson['daily'][1]
     f.close()
 
-def readLastRun():
-    global lastRunJson
-    lastRunFile = open(data_dir + 'last-run.json')
-    lastRunStr = lastRunFile.read()
-    lastRunJson = json.loads(lastRunStr)
-    lastRunFile.close()
-
-def readMonthRun():
-    global monthRunJson
-    monthRunFile = open(data_dir + 'month-running.json')
-    monthRunStr = monthRunFile.read()
-    monthRunJson = json.loads(monthRunStr)
-    monthRunFile.close()
-
-def check_last_run():
-    global lastRunID
-    smashrunURL = "https://api.smashrun.com/v1/my/activities/search/ids?count=1&access_token=" + SMASHRUN_KEY
-    response = requests.get(smashrunURL)
-    responseJson = response.json()
-    lastRunID = responseJson[0]
-
 def drawSmallTemp(hourText,temp,width,height):
     drawRed.text((indent(hourText,bodyText,w/4)+ width, height),hourText,font=bodyText,fill=0,align='left')
     drawBlack.text((indent(temp,iconText,w/4)+ width, height+15),temp,font=iconText,fill=0,align='left')
+
+def drawSmallTempRight(hourText,temp,width,height):
+    drawRed.text((indent(hourText,bodyText,w/2)+ width, height),hourText,font=bodyText,fill=0,align='left')
+    drawBlack.text((indent(temp,indoorText,w/2)+ width, height+15),temp,font=indoorText,fill=0,align='left')
 
 def leftScreenPrint(textPrint,dataPrint,width,height):
     drawRed.text((indent(textPrint,bodyText,w/2)+width,height),textPrint,font=bodyText,fill=0,align='left')
     drawBlack.text((indent(dataPrint,sunText,w/2)+width,height+20),dataPrint, font=sunText, fill=0, align='left')
 
-def runDataPrint(dataPrint,width,height):
-    drawBlack.text((indent(dataPrint,runText,w/2)+width,height),dataPrint, font=runText, fill=0, align='left')
+def rightDataPrint(dataPrint,width,height):
+    drawBlack.text((indent(dataPrint,rightText,w/2)+width,height),dataPrint, font=rightText, fill=0, align='left')
 
-def printVert(textPrint,startHeight,width):
-    i=0
-    changeHeight=0
-    while i < len(textPrint):
-        drawRed.text((indent(textPrint[i],bodyText,w)+width,startHeight+changeHeight),textPrint[i],font=bodyText,fill=0,align='left')
-        changeHeight+=bodyText.getsize(textPrint[i])[1]-5
-        i+=1
+def rightLabelPrint(textPrint,width,height):
+    drawRed.text((indent(textPrint,bodyText,w/2)+width,height),textPrint,font=bodyText,fill=0,align='left')
 
 
 #font.getsize(input)[1]
 
 try:
     write_weather()
-    readLastRun()
-    check_last_run()
-    if lastRunID != lastRunJson[0]['activityId']:
-        print('now updating run file')
-        write_running_month()
-        write_running_last()
-    else:
-        print('no update needed.')
-    
-
-    readMonthRun()
-    readLastRun()
     readWeather()
 
 
     if int(dt.strftime('%H')) > 21:
         responseDailySS = responseTomorrow
-        sunsetText = 'Tomorrow'
+        sunsetText = 'Sunset - Tomorrow'
     else:
         responseDailySS = responseToday
-        sunsetText = 'Today'
+        sunsetText = 'Sunset - Today'
 
     if int(dt.strftime('%H')) > 8:
         responseDailySR = responseTomorrow
-        sunriseText = 'Tomorrow'
+        sunriseText = 'Sunrise - Tomorrow'
     else:
         responseDailySR = responseToday
-        sunriseText = 'Today'
+        sunriseText = 'Sunrise - Today'
 
 
     nextHourTs = responseNextHour['dt']
@@ -154,12 +142,12 @@ try:
     sunriseTs = responseDailySR['sunrise']
     sunriseDt = datetime.fromtimestamp(sunriseTs)
     sunriseStr = sunriseDt.strftime("%-I:%M%p")
-    sunriseFull = 'SR ' + sunriseStr
+    sunriseFull = sunriseStr
 
     sunsetTs = responseDailySS['sunset']
     sunsetDt = datetime.fromtimestamp(sunsetTs)
     sunsetStr = sunsetDt.strftime("%-I:%M%p")
-    sunsetFull = 'SS ' + sunsetStr
+    sunsetFull = sunsetStr
 
     curTemp = str(round(responseCurr['temp']))# + '°'
     curFeel = str(round(responseCurr['feels_like']))# + '°'
@@ -203,69 +191,15 @@ try:
     leftScreenPrint(sunriseText,sunriseFull,400,0)
     leftScreenPrint(sunsetText,sunsetFull,400,80)
 
-    if 14 <= int(dt.strftime('%H')) < 17:
-        time = parser.parse(lastRunJson[0]['startDateTimeLocal'])
-        timeStr = time.strftime("%x")
-        today = date.today().strftime("%x")
-        if timeStr == today:
-            runDate = "Today"
-        else:
-            runDate = timeStr
+    runHorPos=400
+    #rightLabelPrint('Indoor Temp',runHorPos,160)
+    # rightDataPrint(fTemp,runHorPos,240)
+    # rightDataPrint(humidity,runHorPos,320)
+    # rightDataPrint(pressure,runHorPos,400)
 
-        drawRed.text((indent("Last",dateText,w)+35, 360), "Last", font=dateText, fill=0, align='left')
-        drawRed.text((indent("Run",dateText,w)+35, 400), "Run", font=dateText, fill=0, align='left')
-        drawRed.text((indent(runDate,dateText,w)+35, 440), runDate, font=dateText, fill=0, align='left')
-    
-        distanceInt = round((lastRunJson[0]['distance'] * 0.621), 2)
-        distance = str(distanceInt)
-        duration = lastRunJson[0]['duration']
-        timeMin = str(int(duration / 60))
-        timeSec = str(int(duration % 60))
-        calories = str(lastRunJson[0]['calories'])
-        paceMin = str(int((duration / distanceInt) / 60)) 
-        paceSec = str(int((duration / distanceInt) % 60)).zfill(2)
-        data1=distance+"mi"
-        label1="Dist"
-        data2=timeMin+":"+timeSec
-        label2="Time"
-        data3=paceMin+":"+paceSec
-        label3="Pace"
-        data4=calories
-        label4="Cals"   
-    else:
-        drawRed.text((indent("Stats:",dateText,w)+35, 360), "Stats:", font=dateText, fill=0, align='left')
-        drawRed.text((indent(monthText,dateText,w)+35, 400), monthText, font=dateText, fill=0, align='left')
-        drawRed.text((indent(year,dateText,w)+35, 440), year, font=dateText, fill=0, align='left')
-        totalDist = str(round((monthRunJson['totalDistance']*.621),2))
-        runCount = str(monthRunJson['runCount'])
-        if monthRunJson['longestRun'] == None:
-            longRun = '0'
-        else:
-            longRun = str(round((monthRunJson['longestRun'] * 0.621),2))
-        if monthRunJson['averageRunLength'] == None:
-            avgLen = '0'
-        else:
-            avgLen = str(round((monthRunJson['averageRunLength'] * 0.621),2))
-        data1=runCount+" runs"
-        label1="Cnt"
-        data2=totalDist+"mi"
-        label2="Dist"
-        data3=longRun+"mi"
-        label3="Long"
-        data4=avgLen+"mi"
-        label4="Avg"
-
-
-    runHorPos=430
-    labelHorPos=375
-    runDataPrint(data1,runHorPos,160)
-    printVert(label1,170,labelHorPos)
-    runDataPrint(data2,runHorPos,240)
-    printVert(label2,240,labelHorPos)
-    runDataPrint(data3,runHorPos,320)
-    printVert(label3,320,labelHorPos)
-    runDataPrint(data4,runHorPos,400)
-    printVert(label4,410,labelHorPos)
+    drawSmallTempRight('Indoor Temp',fTemp,runHorPos,180)
+    drawSmallTempRight('Humidity',humidity,runHorPos,330)
+    #drawSmallTempRight('Pressure',pressure,runHorPos,385)
 
 
     epd.display(epd.getbuffer(imageBlack),epd.getbuffer(imageRed))

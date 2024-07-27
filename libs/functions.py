@@ -73,8 +73,10 @@ def paste(image: Image, position: tuple = (0, 0)) -> None:
 def indent(input,font,width):
     return int((width - font.getsize(input)[0]) / 2)
 
+
 def indentThirds(input,font,width):
     return int(((width*1.5) - font.getsize(input)[0]) / 2)
+
 
 def imageIndent(image,width):
     return int((width - image.width) / 2)

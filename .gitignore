@@ -3,3 +3,9 @@ settings.py
 __pycache__/*
 logs/*
 data/*
+env/*
+libs/old-waveshare-files/*
+libs/waveshare_epd/*
+libs/__pycache__/*
+attic/*
+test-scripts/*
