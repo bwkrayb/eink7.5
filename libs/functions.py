@@ -90,7 +90,7 @@ def write_weather():
     lon = "-88.337706"
     exclude = "minutely"
     units = "imperial"
-    openWeatherURL = "https://api.openweathermap.org/data/2.5/onecall?lat=" + lat + "&lon=" + lon + "&exclude=" + exclude + "&units=" + units + "&appid=" + API_KEY
+    openWeatherURL = "https://api.openweathermap.org/data/3.0/onecall?lat=" + lat + "&lon=" + lon + "&exclude=" + exclude + "&units=" + units + "&appid=" + API_KEY
     response = requests.get(openWeatherURL)
     responseJson = response.json()
     responseStr = str(responseJson)
