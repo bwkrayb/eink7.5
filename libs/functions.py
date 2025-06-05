@@ -88,7 +88,7 @@ def write_weather():
     f = open(data_dir +'weather.json', 'w')
     lat = "41.902756"
     lon = "-88.337706"
-    exclude = "minutely"
+    exclude = "minutely,alerts"
     units = "imperial"
     openWeatherURL = "https://api.openweathermap.org/data/3.0/onecall?lat=" + lat + "&lon=" + lon + "&exclude=" + exclude + "&units=" + units + "&appid=" + API_KEY
     response = requests.get(openWeatherURL)
