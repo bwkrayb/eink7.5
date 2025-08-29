@@ -9,3 +9,4 @@ libs/waveshare_epd/*
 libs/__pycache__/*
 attic/*
 test-scripts/*
+.vscode/
